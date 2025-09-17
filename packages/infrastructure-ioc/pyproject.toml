@@ -1,0 +1,23 @@
+[project]
+name = "infrastructure-ioc"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Sergio Pereira Junior", email = "pereisergio@outlook.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "application",
+    "domain",
+    "infrastructure",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv.sources]
+domain = { workspace = true }
+application = { workspace = true }
+infrastructure = { workspace = true }
