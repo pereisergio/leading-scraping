@@ -8,7 +8,6 @@ dependencies = [
     "application",
     "domain",
     "infrastructure",
-    "infrastructure-ioc",
 ]
 
 [tool.uv.workspace]
@@ -16,14 +15,12 @@ members = [
     "packages/domain",
     "packages/application",
     "packages/infrastructure",
-    "packages/infrastructure-ioc",
 ]
 
 [tool.uv.sources]
 domain = { workspace = true }
 application = { workspace = true }
 infrastructure = { workspace = true }
-infrastructure-ioc = { workspace = true }
 
 [dependency-groups]
 dev = [{ include-group = "lint" }]
