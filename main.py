@@ -1,8 +1,11 @@
 import sys
+from typing import TYPE_CHECKING
 
-from domain.models import Product
 from infrastructure.scrapper.http_client import RequestsHttpClient
 from infrastructure.scrapper.maeto_scrapper import LojaMaetoScraper
+
+if TYPE_CHECKING:
+    from domain.models import Product
 
 
 def main() -> None:
@@ -35,7 +38,8 @@ def main() -> None:
             print(f"   Preço: R$ {product.price:.2f}")
             print(f"   Preço PIX: R$ {product.price_pix:.2f}")
             print(
-                f"   Parcelado: {product.installments_count}x de R$ {product.price_installments:.2f}"
+                f"   Parcelado: {product.installments_count}x de "
+                f"R$ {product.price_installments:.2f}"
             )
             print(f"   📋 Especificações: {product.specifications}")
 
@@ -47,7 +51,7 @@ def main() -> None:
 
         print(f"✅ Total de produtos processados: {product_count}")
 
-    except Exception as e:
+    except ValueError as e:
         print(f"❌ Erro: {e}")
 
 

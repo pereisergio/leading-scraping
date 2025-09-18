@@ -10,14 +10,14 @@ from infrastructure.validations.exceptions import InfrastructureError
 
 
 class LojaMaetoScraper(IWebScraper):
-    BASE_URL: str = "https://www.lojamaeto.com/search/"
+    BASE_URL: str = "https://www.lojamaeto.com"
 
     def __init__(self, http_client: IHttpClient) -> None:
         self._http_client: IHttpClient = http_client
 
     def _build_search_url(self, query: str, page: int = 1) -> str:
         """Constrói a URL de busca completa."""
-        return f"{self.BASE_URL}?q={query}&page={page}"
+        return f"{self.BASE_URL}/search?q={query}&page={page}"
 
     @override
     def scrape_products(self, query: str) -> Iterator["Product"]:
@@ -100,19 +100,21 @@ class LojaMaetoScraper(IWebScraper):
         return self._clean_to_float(price) if price else 0.0
 
     def _extract_installments_count(self, item: Tag) -> int:
-        qtd_parcela_tag = item.select_one("div.product-parcel span.installments-number")
-        if not qtd_parcela_tag or not qtd_parcela_tag.text:
+        installments_count_tag = item.select_one(
+            "div.product-parcel span.installments-number"
+        )
+        if not installments_count_tag or not installments_count_tag.text:
             return 0
 
-        qtd_parcela_text: str = qtd_parcela_tag.text.strip()
-        match = re.search(r"\d+", qtd_parcela_text)
+        installments_count_text: str = installments_count_tag.text.strip()
+        match = re.search(r"\d+", installments_count_text)
         if match:
             try:
                 return int(match.group())
             except (ValueError, IndexError) as e:
                 print(
                     f"Erro ao converter quantidade de parcelas para int: "
-                    f"'{qtd_parcela_text}' - {e}"
+                    f"'{installments_count_text}' - {e}"
                 )
         return 0
 
@@ -132,40 +134,40 @@ class LojaMaetoScraper(IWebScraper):
 
         product_url: str = str(link_elem["href"])
         if product_url.startswith("/"):
-            product_url = f"https://www.lojamaeto.com{product_url}"
+            product_url = f"{self.BASE_URL}{product_url}"
         return product_url
 
     @override
     def scrape_product_details(self, product_url: str) -> dict[str, str]:
         try:
             html: str = self._http_client.get(product_url)
-            soup: BeautifulSoup = BeautifulSoup(html, "html.parser")
-            specs_table: Tag | None = soup.select_one(
-                "table#product-description-table-attributes"
-            )
-
-            if not specs_table:
-                return {}
-
-            specs: dict[str, str] = {}
-            rows: ResultSet[Tag] = specs_table.select("tr")
-
-            row: Tag
-            for row in rows:
-                name_td: Tag | None = row.select_one("td.attribute-name")
-                value_td: Tag | None = row.select_one("td.attribute-value span")
-
-                if name_td and value_td:
-                    name_text: str = name_td.get_text(strip=True)
-                    value_text: str = value_td.get_text(strip=True)
-
-                    # Só adicionar se ambos não estiverem vazios
-                    if name_text and value_text:
-                        specs[name_text] = value_text
-
-            return specs
-
         except ValueError as e:
             error_msg: str = f"Erro ao extrair especificações de {product_url}: {e}"
             print(error_msg)
             return {}
+
+        soup: BeautifulSoup = BeautifulSoup(html, "html.parser")
+        specs_table: Tag | None = soup.select_one(
+            "table#product-description-table-attributes"
+        )
+
+        if not specs_table:
+            return {}
+
+        specs: dict[str, str] = {}
+        rows: ResultSet[Tag] = specs_table.select("tr")
+
+        row: Tag
+        for row in rows:
+            name_td: Tag | None = row.select_one("td.attribute-name")
+            value_td: Tag | None = row.select_one("td.attribute-value span")
+
+            if name_td and value_td:
+                name_text: str = name_td.get_text(strip=True)
+                value_text: str = value_td.get_text(strip=True)
+
+                # Só adicionar se ambos não estiverem vazios
+                if name_text and value_text:
+                    specs[name_text] = value_text
+
+        return specs
