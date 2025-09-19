@@ -50,9 +50,9 @@ pip install -r requirements.txt
 
 **Execução:**
 
+*Exemplo:*
+`python main.py <termo_de_busca>`
 ```pwsh
-python main.py <termo_de_busca>
-# Exemplo:
 python main.py casa
 ```
 
@@ -75,9 +75,9 @@ uv sync --no-group dev
 
 **Execução:**
 
+*Exemplo:*
+`uv run main.py <termo_de_busca>`
 ```pwsh
-uv run main.py <termo_de_busca>
-# Exemplo:
 uv run main.py casa
 ```
 
