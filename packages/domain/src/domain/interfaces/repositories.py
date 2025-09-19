@@ -7,9 +7,9 @@ if TYPE_CHECKING:
 
 class IProductRepository(ABC):
     @abstractmethod
-    def create_async(self, product: "Product") -> None:
+    def create(self, product: "Product") -> None:
         pass
 
     @abstractmethod
-    def update_async(self, product: "Product") -> None:
+    def update(self, product: "Product") -> None:
         pass

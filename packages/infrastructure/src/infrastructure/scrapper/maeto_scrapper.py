@@ -3,10 +3,10 @@ from collections.abc import Iterator
 from typing import override
 
 from bs4 import BeautifulSoup, ResultSet, Tag
-from domain.interfaces.scrapers import IHttpClient, IWebScraper
+from domain.interfaces import IHttpClient, IWebScraper
 from domain.models import Product
 
-from infrastructure.validations.exceptions import InfrastructureError
+from infrastructure.validations import InfrastructureError
 
 
 class LojaMaetoScraper(IWebScraper):
