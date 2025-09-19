@@ -56,7 +56,7 @@ pip install -r requirements.txt
 python main.py casa
 ```
 
-> **Observação:** Não é necessário rodar manualmente o módulo `create_database.py`. O banco de dados será criado automaticamente quando o projeto for executado.
+> **Observação:** Não é necessário rodar manualmente o módulo `create_database.py`. O banco de dados `products.db` será gerado automaticamente na primeira execução do projeto.
 
 ---
 
