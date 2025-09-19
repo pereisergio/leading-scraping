@@ -12,12 +12,26 @@ if TYPE_CHECKING:
 
 
 class SqliteProductRepository(IProductRepository):
+    """
+    Implementação concreta de repositório de produtos usando SQLite.
+
+    Responsável por persistir, atualizar e consultar produtos no banco local.
+    """
+
     def __init__(self, db_path: str = "products.db") -> None:
+        """
+        Inicializa o repositório e garante a existência da tabela de produtos.
+
+        Args:
+            db_path: Caminho do arquivo do banco de dados SQLite.
+        """
         self._db_path: str = db_path
         self._init_database()
 
     def _init_database(self) -> None:
-        """Inicializa o banco de dados e cria as tabelas necessárias."""
+        """
+        Inicializa o banco de dados e cria as tabelas necessárias.
+        """
         with sqlite3.connect(self._db_path) as conn:
             cursor: sqlite3.Cursor = conn.cursor()
             cursor.execute("""
@@ -34,32 +48,60 @@ class SqliteProductRepository(IProductRepository):
             conn.commit()
 
     def _get_connection(self) -> sqlite3.Connection:
-        """Retorna uma conexão com o banco de dados configurado para UTF-8."""
+        """
+        Retorna uma conexão com o banco de dados configurado para UTF-8.
+        """
         conn: sqlite3.Connection = sqlite3.connect(self._db_path)
         conn.execute("PRAGMA encoding='UTF-8'")
         return conn
 
     def _exists(self, sku: str) -> bool:
-        """Verifica se um produto existe pelo SKU."""
+        """
+        Verifica se um produto existe pelo SKU.
+
+        Args:
+            sku: Identificador único do produto.
+
+        Returns:
+            True se o produto existe, False caso contrário.
+        """
         with self._get_connection() as conn:
             cursor: sqlite3.Cursor = conn.cursor()
             cursor.execute("SELECT 1 FROM products WHERE sku = ?", (sku,))
             return cursor.fetchone() is not None
 
     def _serialize_specifications(self, specifications: dict[str, str]) -> str:
-        """Serializa especificações preservando UTF-8."""
+        """
+        Serializa especificações para JSON preservando UTF-8.
+
+        Args:
+            specifications: Dicionário de especificações do produto.
+
+        Returns:
+            String JSON das especificações.
+        """
         return json.dumps(specifications, ensure_ascii=False, separators=(",", ":"))
 
     @override
     def create(self, product: "Product") -> None:
-        """Cria um novo produto ou atualiza se já existir."""
+        """
+        Cria um novo produto ou atualiza se já existir.
+
+        Args:
+            product: Instância de Product a ser persistida.
+        """
         if self._exists(product.sku):
             self.update(product)
         else:
             self._insert_new_product(product)
 
     def _insert_new_product(self, product: "Product") -> None:
-        """Insere um novo produto no banco de dados."""
+        """
+        Insere um novo produto no banco de dados.
+
+        Args:
+            product: Instância de Product a ser inserida.
+        """
         with self._get_connection() as conn:
             cursor: sqlite3.Cursor = conn.cursor()
 
@@ -84,7 +126,12 @@ class SqliteProductRepository(IProductRepository):
 
     @override
     def update(self, product: "Product") -> None:
-        """Atualiza um produto existente no banco de dados."""
+        """
+        Atualiza um produto existente no banco de dados.
+
+        Args:
+            product: Instância de Product com dados atualizados.
+        """
         with self._get_connection() as conn:
             cursor: sqlite3.Cursor = conn.cursor()
 

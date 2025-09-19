@@ -1,0 +1,3 @@
+-e ./packages/domain
+-e ./packages/application
+-e ./packages/infrastructure

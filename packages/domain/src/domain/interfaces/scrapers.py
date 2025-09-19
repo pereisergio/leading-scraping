@@ -7,38 +7,57 @@ if TYPE_CHECKING:
 
 
 class IWebScraper(ABC):
+    """
+    Interface para scrapers de produtos.
+
+    Define métodos para coletar produtos e detalhes de produtos a partir de
+    fontes externas.
+    """
+
     @abstractmethod
     def scrape_products(self, query: str) -> Iterator["Product"]:
         """
-        Realiza o scraping de produtos a partir da URL informada.
+        Coleta produtos de acordo com o termo de busca informado.
 
-        Deve retornar um iterador de objetos Product, um para cada produto
-        encontrado.
-        Implementações podem lidar com paginação e múltiplas requisições conforme
-        necessário.
+        Args:
+            query: Termo de busca para filtrar produtos.
+
+        Returns:
+            Iterator de objetos Product encontrados.
         """
         pass
 
     @abstractmethod
     def scrape_product_details(self, product_url: str) -> dict[str, str]:
         """
-        Realiza o scraping dos detalhes de um produto específico a partir da URL
-        informada.
+        Coleta os detalhes de um produto específico a partir da URL informada.
 
-        Deve retornar um objeto Product preenchido com todas as informações detalhadas
-        do produto.
+        Args:
+            product_url: URL do produto a ser detalhado.
+
+        Returns:
+            Dicionário com informações detalhadas do produto.
         """
         pass
 
 
 class IHttpClient(ABC):
+    """
+    Interface para clientes HTTP.
+
+    Define método para realizar requisições HTTP GET e retornar o conteúdo da resposta.
+    """
+
     @abstractmethod
     def get(self, url: str, headers: dict[str, str] | None = None) -> str:
         """
-        Realiza uma requisição HTTP GET para a URL informada e retorna o conteúdo da
-        resposta como string.
+        Realiza uma requisição HTTP GET para a URL informada.
 
-        O parâmetro headers pode ser utilizado para enviar cabeçalhos personalizados na
-        requisição.
+        Args:
+            url: URL de destino da requisição.
+            headers: Cabeçalhos personalizados para a requisição (opcional).
+
+        Returns:
+            Conteúdo da resposta como string.
         """
         pass

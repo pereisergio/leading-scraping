@@ -1,7 +1,7 @@
 [project]
 name = "leading-scraping"
 version = "0.1.0"
-description = "Add your description here"
+description = "Projeto para scraping e coleta de produtos em lojas online, organizado em múltiplos pacotes Python."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
