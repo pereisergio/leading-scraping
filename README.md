@@ -111,7 +111,7 @@ leading-scraping/
     └── src/infrastructure/
       ├── scrapper/
       │   ├── http_client.py              # Cliente HTTP para requisições
-      │   └── maeto_scrapper.py           # Scraper específico do site Maeto
+      │   └── maeto_scrapper.py           # Scraper específico do site Loja Maeto
       ├── repositories/
       │   └── sqlite_local.py             # Persistência local com SQLite
       └── validations/
@@ -134,7 +134,7 @@ leading-scraping/
 
 #### infrastructure
 - **scrapper/http_client.py**: Implementa o cliente HTTP para requisições externas.
-- **scrapper/maeto_scrapper.py**: Scraper específico para o site Maeto.
+- **scrapper/maeto_scrapper.py**: Scraper específico para o site Loja Maeto.
 - **repositories/sqlite_local.py**: Implementa persistência local usando SQLite.
 - **validations/exceptions.py**: Exceções e validações específicas da infraestrutura.
 
